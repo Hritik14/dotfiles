@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -ex
+
+cp -r ~/.config/i3 .
+cp -r ~/.config/termite .
+cp -r ~/.config/dunst .
+cp ~/.zshrc .zshrc
+# cp -r ~/.mutt .
+
+git submodule foreach git pull
+
+set +x
+echo -n "Push ? [Y/n]: "
+read push
+if [[ ${push@L} == "y" ]]; then
+	git add .
+	git commit -m "Collections collector collected"
+	git push
+fi
