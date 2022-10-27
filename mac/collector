@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -ex
+
+cp ~/.zshrc .zshrc
+cp ~/.yabairc .yabairc
+cp ~/.skhdrc .skhdrc
+
+git submodule foreach git pull
+
+set +x
+echo -n "Push ? [Y/n]: "
+read push
+if [[ ${push@L} == "y" ]]; then
+	git add .
+	git commit -m "Mac collections collector collected"
+	git push
+fi
