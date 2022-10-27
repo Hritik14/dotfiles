@@ -13,7 +13,7 @@ git submodule foreach git pull
 set +x
 echo -n "Push ? [Y/n]: "
 read push
-if [[ ${push@L} == "y" ]]; then
+if [[ ${push} == "Y" ]]; then
 	git add .
 	git commit -m "Collections collector collected"
 	git push
