@@ -1,0 +1,39 @@
+# Courtesy of
+# https://github.com/leftbones/Dotfiles/blob/main/Configs/.skhdrc
+# https://github.com/Hritik14/dwm/blob/my_force/hotkeys.h
+
+# navigation
+alt - j : yabai -m window --focus next 
+alt - k : yabai -m window --focus prev 
+alt - 0x0D : yabai -m display --focus prev
+alt - 0x0E : yabai -m display --focus next
+
+# spaces
+cmd - tab : yabai -m space --focus recent 
+
+# moving windows
+shift + alt - h : yabai -m window --swap west
+shift + alt - j : yabai -m window --swap south
+shift + alt - k : yabai -m window --swap north
+shift + alt - l : yabai -m window --swap east
+alt - return : yabai -m window --swap recent; \
+               yabai -m window --focus recent
+
+# equalize window size
+cmd + ctrl - 0 : yabai -m space --balance
+
+# change layout
+alt - f : yabai -m window --toggle native-fullscreen
+alt - m : yabai -m window --toggle zoom-parent
+alt - r : yabai -m window --toggle split
+
+# toggle current space layout
+cmd + ctrl - t : yabai -m space --layout bsp
+cmd + ctrl - f : yabai -m space --layout float
+
+# temporarily float and center window
+ctrl + alt - space : yabai -m window --toggle float;\
+                     yabai -m window --grid 4:4:1:1:2:2
+
+# hotkeys
+shift + alt - return : open -na iterm
