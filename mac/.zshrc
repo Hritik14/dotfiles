@@ -16,6 +16,10 @@ gitaap(){
 	git add "$*" && git commit --amend --no-edit && git push -f
 }
 
+mkcd(){
+    mkdir "$1" && cd "$1"
+}
+
 # returns filename if exists
 # else /dev/null
 filenameOrNull(){
@@ -32,15 +36,13 @@ setopt extended_glob
 setopt +o nomatch
 setopt interactivecomments
 
-source ~/.virtualenv.zshrc
-
 alias info info --vi-keys
 alias logcat="adb logcat"
 alias logcat="adb logcat"
-alias ls='ls'
-alias l='ls -l'
-alias ll='ls -l'
-alias lh='ls -lh'
+alias ls='ls --color=auto'
+alias l='ls -l --color=auto'
+alias ll='ls -l --color=auto'
+alias lh='ls -lh --color=auto'
 alias rdp='xfreerdp /kbd:0x00010409 /w:1920 /h:1080 '
 alias tempmail='firefox dropmail.me'
 alias pgdb='/usr/bin/gdb -ex "source /usr/share/pwndbg/gdbinit.py"'
@@ -53,6 +55,11 @@ alias xclip='xclip -r'
 alias vi='vim --cmd "let vim_minimal=1" '
 alias kubectl='kubectl --namespace=zamr-stg-limekit'
 alias frida_dir='cd ~/CRED/tools/'
+alias gcd='cd $(git rev-parse --show-toplevel)'
+alias grep_java_path='git grep -i -e "@.*Mapping" -e "^ *@Path"'
+alias ctf='cd ~/ctf/ && . venv/bin/activate'
+alias grep='ggrep' # bsd grep is useless
+alias port='sudo port'
 
 autoload -Uz compinit
 compinit
@@ -61,6 +68,8 @@ setopt COMPLETE_ALIASES
 zstyle ':completion::complete:*' gain-privileges 1
 zstyle ':completion:*' completer _complete
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' '+l:|=* r:|=*'
+
+ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd completion)
 
 
 
@@ -171,30 +180,101 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 unsetopt share_history
 
-# start-up
+# Disable underline
+(( ${+ZSH_HIGHLIGHT_STYLES} )) || typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[path]=none
+ZSH_HIGHLIGHT_STYLES[path_prefix]=none
+
+# startup
+# Black iterm2 titlebar
+printf -- $'\033]6;1;bg;red;brightness;0\a\033]6;1;bg;green;brightness;0\a\033]6;1;bg;blue;brightness;0\a'
 if [ "$TMUX" = "" ]; then tmux; fi
+
+
+export PYTHONBREAKPOINT=ipdb.set_trace
+export LESS="-XRFS"
 
 # ============= Mac specific =====================
 export CLICOLOR=xterm-color
+export WEECHAT_HOME=~/.weechat
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 # export PATH=/opt/homebrew/bin:$PATH (in zprofile)
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-alias python='python3'
+# source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-export PATH="/opt/homerew/opt/vim/bin/vim:$PATH"
+export PATH="/opt/homebrew/opt/macvim/bin/vim:$PATH"
 export PATH="/Users/neo/Library/Android/sdk/emulator:$PATH"
+export PATH="/Users/neo/bin:$PATH"
+export PATH="/Users/neo/bin/venv/bin:$PATH"
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+export PATH="/opt/homebrew/Cellar/dex2jar/2.3/bin/:$PATH"
+export PATH="/opt/homebrew/bin/:$PATH"
+export PATH="/Users/neo/.local/bin/:$PATH"
+export PATH="/Users/neo/node_modules/.bin/:$PATH"
+export PATH="/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/:$PATH"
+export PATH="/Users/neo/go/bin/:$PATH"
 source ~/.profile
-eval "$(pyenv init -)"
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export PYENV_ROOT="$HOME/.pyenv"
+export LIMA_INSTANCE=debian
+export JAVA_HOME='/opt/homebrew/Cellar/openjdk@11/11.0.24/libexec/openjdk.jdk/Contents/Home'
+alias brewi='arch --x86_64 /usr/local/Homebrew/bin/brew'
+alias pythoni='/usr/local/bin/python3'
+alias mac='sw_vers'
+alias java_home='/usr/libexec/java_home'
+
+# Function to initialize pyenv only when necessary
+# Reason: eval "$(pyenv init -)" is slow
+alias pyenv=lazy_pyenv
+lazy_pyenv() {
+  unalias pyenv
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init -)"
+  env pyenv "$@"
+}
 
 unalias xclip
 xclip(){
 	pbcopy < $*
 }
 
-# =========== Cloud specific ==================
+cred(){
+    export GIT_SSH_COMMAND="ssh -i ~/.ssh/cred-hritik"
+}
+
+uncred(){
+    export GIT_SSH_COMMAND=""
+}
+
+# # =========== Cloud specific ==================
 # autoload -Uz promptinit && promptinit
 # prompt adam2
-# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
-# echo "source ${(q-)PWD}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
+# zshdir="$HOME/.zsh"
+# 
+# # ------------ First run -----------------------
+# if [[ ! -d "$zshdir" ]]; then
+# 	(
+# 	mkdir $zshdir
+# 	cd $zshdir
+# 	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+# 	git clone https://github.com/zsh-users/zsh-autosuggestions
+# 	)
+# 	exec zsh
+# fi
+# 
+# # ------------ Future runs ----------------------
+# source "$zshdir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" 
+# source "$zshdir/zsh-autosuggestions/zsh-autosuggestions.zsh"
+#
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=5'
+
+# ================= Global Plugin vars =============
+ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd completion)
+# export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/neo/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+# Created by `pipx` on 2024-05-05 05:27:16
+export PATH="$PATH:/Users/neo/.local/bin"
+export PATH=$PATH:/Users/neo/.privado/bin
