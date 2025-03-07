@@ -20,6 +20,14 @@ mkcd(){
     mkdir "$1" && cd "$1"
 }
 
+sshgrep(){
+    grep -A3 $1 ~/.ssh/config
+}
+
+function py() {
+    uv run "$@"
+}
+
 # returns filename if exists
 # else /dev/null
 filenameOrNull(){
@@ -60,6 +68,8 @@ alias grep_java_path='git grep -i -e "@.*Mapping" -e "^ *@Path"'
 alias ctf='cd ~/ctf/ && . venv/bin/activate'
 alias grep='ggrep' # bsd grep is useless
 alias port='sudo port'
+alias ds='llm -m deepseek-r1:7b'
+alias dsc='llm chat -m deepseek-r1:7b'
 
 autoload -Uz compinit
 compinit
@@ -199,8 +209,8 @@ export CLICOLOR=xterm-color
 export WEECHAT_HOME=~/.weechat
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 # export PATH=/opt/homebrew/bin:$PATH (in zprofile)
-# source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export PATH="/opt/homebrew/opt/macvim/bin/vim:$PATH"
 export PATH="/Users/neo/Library/Android/sdk/emulator:$PATH"
@@ -216,7 +226,7 @@ export PATH="/Users/neo/go/bin/:$PATH"
 source ~/.profile
 export PYENV_ROOT="$HOME/.pyenv"
 export LIMA_INSTANCE=debian
-export JAVA_HOME='/opt/homebrew/Cellar/openjdk@11/11.0.24/libexec/openjdk.jdk/Contents/Home'
+export JAVA_HOME='/opt/homebrew/Cellar/openjdk@11/11.0.26/libexec/openjdk.jdk/Contents/Home'
 alias brewi='arch --x86_64 /usr/local/Homebrew/bin/brew'
 alias pythoni='/usr/local/bin/python3'
 alias mac='sw_vers'
@@ -278,3 +288,8 @@ export PATH="/Users/neo/.rd/bin:$PATH"
 # Created by `pipx` on 2024-05-05 05:27:16
 export PATH="$PATH:/Users/neo/.local/bin"
 export PATH=$PATH:/Users/neo/.privado/bin
+export PATH="/opt/homebrew/opt/mysql@8.4/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/neo/.lmstudio/bin"
+export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
