@@ -4,8 +4,9 @@ set -ex
 
 cp ~/.zshrc .zshrc
 cp ~/.yabairc .yabairc
-cp ~/.skhdrc .skhdrc
+cp ~/.skhdrc .skhdrc || true
 cp ~/.tmux.conf .tmux.conf
+cp -r ~/.config .config
 
 git submodule foreach git pull
 

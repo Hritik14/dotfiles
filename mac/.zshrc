@@ -232,6 +232,8 @@ alias pythoni='/usr/local/bin/python3'
 alias mac='sw_vers'
 alias pgcli_cloud='PGPASSWORD="appsecOnPostgres#1337status" pgcli -h devsecops.csc0ofmz4u7s.ap-south-1.rds.amazonaws.com -U appsecroot'
 alias java_home='/usr/libexec/java_home'
+alias vim='nvim'
+
 
 # Function to initialize pyenv only when necessary
 # Reason: eval "$(pyenv init -)" is slow
@@ -294,3 +296,6 @@ export PATH="/opt/homebrew/opt/mysql@8.4/bin:$PATH"
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/neo/.lmstudio/bin"
 export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
