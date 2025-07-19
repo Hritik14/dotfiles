@@ -88,10 +88,27 @@ require("lazy").setup({
   ---@module "neo-tree"
   ---@type neotree.Config?
   opts = {
-    window = {
-      position = "current",
+    filesystem = {
+      hijack_netrw_behavior = "open_current",
+        window = { 
+          mappings = { 
+            -- disable fuzzy finder 
+            ["/"] = "noop" 
+          } 
+	  }
     },
-  },
+    window = {
+      position = "right",
+    },
+  event_handlers = {
+    {
+      event = "file_opened",
+      handler = function()
+		  require("neo-tree.command").execute({ action = "focus" })
+      end
+    },
+  }
+ },
 },
 
   {
@@ -117,6 +134,9 @@ require("lazy").setup({
 	    luasnip.lsp_expand(args.body)
           end,
         },
+	completion = {
+    	keyword_length = 2,
+	},
 	window = {
 	      completion = cmp.config.window.bordered(),
 	      documentation = cmp.config.window.bordered(),
@@ -225,7 +245,7 @@ require("lazy").setup({
   -- colorscheme that will be used when installing plugins.
   install = { colorscheme = { "habamax" } },
   -- automatically check for plugin updates
-  checker = { enabled = true },
+  checker = { enabled = false },
 })
 
 vim.cmd.source(vimrc)
@@ -235,3 +255,69 @@ vim.cmd.source(vimrc)
 vim.lsp.enable('pyright')
 vim.lsp.enable('tsserver')
 vim.lsp.enable('gopls')
+
+vim.diagnostic.config({
+	  jump = { float = true },
+	  signs = false,
+})
+
+
+function AllDiagnosticsStatus()
+  local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+  local warns = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+  if errors > 0 or warns > 0 then
+    return string.format(" %d  %d", errors, warns)
+  else
+    return ""
+  end
+end
+
+vim.o.statusline = "%m %t %y %<%{&fileencoding?&fileencoding:&encoding} %{v:lua.AllDiagnosticsStatus()}%=C:%c L:%l %P"
+
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+	vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" } }, apply = true })
+    vim.lsp.buf.format({
+      filter = function(client)
+        return client.name == "gopls"
+      end,
+      async = false,
+    })
+  end,
+})
+
+require("lspconfig").gopls.setup({
+  settings = {
+    gopls = {
+      gofumpt = true,
+      staticcheck = true,
+      completeUnimported = true,
+      usePlaceholders = true,
+    },
+  },
+})
+
+
+-- lsp mappings
+vim.api.nvim_create_augroup('UserLspConfig', {})
+vim.api.nvim_clear_autocmds({ group = 'UserLspConfig' })
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = 'UserLspConfig',
+  callback = function(ev)
+    local opts = { buffer = ev.buf, desc = "LSP: " } -- Use 'desc' for clarity
+
+    vim.keymap.set('n', 'gd',  vim.lsp.buf.definition,         { buffer = ev.buf, desc = 'LSP: Go to definition' })
+    vim.keymap.set('n', 'gD',  vim.lsp.buf.declaration,        { buffer = ev.buf, desc = 'LSP: Go to declaration' })
+    vim.keymap.set('n', 'gi',  vim.lsp.buf.implementation,     { buffer = ev.buf, desc = 'LSP: Go to implementation' })
+    vim.keymap.set('n', 'gr',  vim.lsp.buf.references,         { buffer = ev.buf, desc = 'LSP: Find references' })
+    vim.keymap.set('n', 'rn',  vim.lsp.buf.rename,             { buffer = ev.buf, desc = 'LSP: Rename symbol' })
+    vim.keymap.set('n', 'gy',  vim.lsp.buf.type_definition,    { buffer = ev.buf, desc = 'LSP: Go to type definition' })
+    vim.keymap.set('n', 'K',   vim.lsp.buf.hover,              { buffer = ev.buf, desc = 'LSP: Show hover doc' })
+    vim.keymap.set('n', '<C-n>',  vim.diagnostic.goto_prev,       { buffer = ev.buf, desc = 'LSP: Go to previous diagnostic' })
+    vim.keymap.set('n', '<C-b>',  vim.diagnostic.goto_next,       { buffer = ev.buf, desc = 'LSP: Go to next diagnostic' })
+--    vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action,  { buffer = ev.buf, desc = 'LSP: Code action' })
+  end,
+})
