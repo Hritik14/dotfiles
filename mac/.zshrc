@@ -231,6 +231,8 @@ alias brewi='arch --x86_64 /usr/local/Homebrew/bin/brew'
 alias pythoni='/usr/local/bin/python3'
 alias mac='sw_vers'
 alias java_home='/usr/libexec/java_home'
+alias vim='nvim'
+
 
 # Function to initialize pyenv only when necessary
 # Reason: eval "$(pyenv init -)" is slow
@@ -293,3 +295,6 @@ export PATH="/opt/homebrew/opt/mysql@8.4/bin:$PATH"
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/neo/.lmstudio/bin"
 export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
