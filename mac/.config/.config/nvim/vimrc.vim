@@ -17,6 +17,7 @@ set splitbelow
 set splitright
 set tabstop=4
 set shiftwidth=4
+set updatetime=500 " time to show error popup
 
 
 autocmd Filetype mail set spell
@@ -24,12 +25,12 @@ autocmd Filetype gitcommit set spell
 autocmd Filetype python set textwidth=100
 autocmd Filetype rst set textwidth=100
 
+autocmd CursorHold * lua vim.diagnostic.open_float(nil, {focus=false})
+
 " hotkeys
-nnoremap <C-F> :BLines<CR>
-nnoremap <C-U> :Lines<CR>
+nnoremap <C-F> :Rg<CR>
+nnoremap <C-U> :BLines<CR>
 cabbrev E Files
-nnoremap <C-b> :lbefore<CR>
-nnoremap <C-n> :lafter<CR>
 nnoremap <leader>1 :lrewind<CR>
 nnoremap gb :Buffers<CR>
 nmap <Right> :bnext<CR>
@@ -37,7 +38,7 @@ nmap <Left> :bprev<CR>
 nnoremap <silent> <C-t> :Neotree filesystem reveal right toggle<CR>
 command! CD cd %:p:h | echo "Changed directory to " . getcwd()
 vnoremap <Space> zf
-nnoremap <nowait> <Space> gd
+nnoremap <nowait> <silent> <Space> :lua vim.lsp.buf.definition()<CR>
 
 
 "splits
@@ -47,5 +48,4 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
 
-:set laststatus=2
-:set statusline=%m\ %t\ %y\ %{&fileencoding?&fileencoding:&encoding}\ %=%(C:%c\ L:%l\ %P%)
+set laststatus=2
