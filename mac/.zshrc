@@ -34,8 +34,8 @@ filenameOrNull(){
 	 [[ -e "$1" ]] && echo "$1" || echo "/dev/null"
 }
 HISTFILE=~/.zsh_history
-HISTSIZE=50000
-SAVEHIST=$HISTSIZE
+export HISTSIZE=50000
+export SAVEHIST=$HISTSIZE
 setopt appendhistory
 setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_ALL_DUPS
@@ -70,6 +70,7 @@ alias grep='ggrep' # bsd grep is useless
 alias port='sudo port'
 alias ds='llm -m deepseek-r1:7b'
 alias dsc='llm chat -m deepseek-r1:7b'
+alias mount_pandora='rclone mount b2:neo-pandora ~/pandora/ --allow-non-empty --vfs-cache-mode full --allow-other --daemon'
 
 autoload -Uz compinit
 compinit
@@ -157,22 +158,25 @@ add-zsh-hook -Uz precmd rehash_precmd
 
 ttyctl -f
 
+if [[ "$NVIM" == "" ]]; then
+  # enable vi mode
+  bindkey -v
+  export KEYTIMEOUT=1
+  # Show vi mode
+  # https://unix.stackexchange.com/a/1019/154333
+  function zle-line-init zle-keymap-select {
+      RPS1="${${KEYMAP/vicmd/[NORMAL]}/(main|viins)/}"
+      RPS2=$RPS1
+      zle reset-prompt
+  }
 
-# enable vi mode
-bindkey -v
-export KEYTIMEOUT=1
-# Show vi mode
-# https://unix.stackexchange.com/a/1019/154333
-function zle-line-init zle-keymap-select {
-    RPS1="${${KEYMAP/vicmd/[NORMAL]}/(main|viins)/}"
-    RPS2=$RPS1
-    zle reset-prompt
-}
+  zle -N zle-line-init
+  zle -N zle-keymap-select
+  # backspace must work always
+  bindkey -v '^?' backward-delete-char
+fi
 
-zle -N zle-line-init
-zle -N zle-keymap-select
-# backspace must work always
-bindkey -v '^?' backward-delete-char
+
 # Reverse search
 # source /usr/share/fzf/key-bindings.zsh
 # source /usr/share/fzf/completion.zsh
@@ -227,6 +231,7 @@ source ~/.profile
 export PYENV_ROOT="$HOME/.pyenv"
 export LIMA_INSTANCE=debian
 export JAVA_HOME='/opt/homebrew/Cellar/openjdk@11/11.0.26/libexec/openjdk.jdk/Contents/Home'
+export RCLONE_FAST_LIST=1
 alias brewi='arch --x86_64 /usr/local/Homebrew/bin/brew'
 alias pythoni='/usr/local/bin/python3'
 alias mac='sw_vers'
@@ -298,3 +303,4 @@ export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"

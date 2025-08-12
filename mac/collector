@@ -2,11 +2,13 @@
 
 set -ex
 
+cd $(dirname $0)
+
 cp ~/.zshrc .zshrc
 cp ~/.yabairc .yabairc
 cp ~/.skhdrc .skhdrc || true
 cp ~/.tmux.conf .tmux.conf
-cp -r ~/.config .config
+rsync ~/.config/nvim .config/nvim
 
 git submodule foreach git pull
 
