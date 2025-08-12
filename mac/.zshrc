@@ -238,6 +238,8 @@ alias mac='sw_vers'
 alias java_home='/usr/libexec/java_home'
 alias vim='nvim'
 
+source ~/.zshrc_extra_aliases
+
 
 # Function to initialize pyenv only when necessary
 # Reason: eval "$(pyenv init -)" is slow
