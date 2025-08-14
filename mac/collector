@@ -8,7 +8,7 @@ cp ~/.zshrc .zshrc
 cp ~/.yabairc .yabairc
 cp ~/.skhdrc .skhdrc || true
 cp ~/.tmux.conf .tmux.conf
-rsync ~/.config/nvim .config/nvim
+rsync -av ~/.config/nvim .config/nvim
 
 git submodule foreach git pull
 
