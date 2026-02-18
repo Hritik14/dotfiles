@@ -4,6 +4,8 @@
 require("lsp.go")
 require("lsp.ts")
 require("lsp.lua")
+vim.lsp.enable('pyright')
+vim.lsp.enable('clangd')
 
 
 -- lsp mappings

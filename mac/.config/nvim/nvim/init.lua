@@ -9,6 +9,7 @@ require("config.lazy")
 vim.cmd.source(vimrc)
 vim.cmd('highlight WinSeparator guifg=gray')
 
+require("scripts")
 require("lsp")
 
 vim.diagnostic.config({
@@ -37,6 +38,7 @@ function AllDiagnosticsStatus()
 end
 
 vim.o.statusline = "%m %t %y %<%{&fileencoding?&fileencoding:&encoding} %{v:lua.AllDiagnosticsStatus()}%=C:%c L:%l %P"
+vim.o.textwidth = 110
 
 vim.api.nvim_create_autocmd("CursorHold", {
   callback = function()
@@ -50,3 +52,8 @@ vim.api.nvim_create_autocmd("CursorHold", {
 
 require('commands')
 require('hotkeys')
+require('templates')
+
+vim.g.fzf_vim = {
+  preview_window = {'hidden,right,50%,<70(up,40%)', 'ctrl-/'}
+}

@@ -24,6 +24,23 @@ sshgrep(){
     grep -A3 $1 ~/.ssh/config
 }
 
+colima(){
+  docker context list
+}
+
+
+venv(){
+  if [ -f '.venv/bin/activate' ]; then
+    source .venv/bin/activate
+  elif [ -f 'venv/bin/activate' ]; then
+    source venv/bin/activate
+  else
+    uv init
+    uv sync
+    source .venv/bin/activate
+  fi
+}
+
 function py() {
     uv run "$@"
 }
@@ -60,7 +77,7 @@ alias greph="/usr/bin/grep -i --color=auto \
 	--exclude-from='$(filenameOrNull ./gitignore)' \
 	--exclude-from='$(filenameOrNull ./.ignore)'"
 alias xclip='xclip -r'
-alias vi='vim --cmd "let vim_minimal=1" '
+alias vi='nvim --clean'
 alias kubectl='kubectl --namespace=zamr-stg-limekit'
 alias frida_dir='cd ~/CRED/tools/'
 alias gcd='cd $(git rev-parse --show-toplevel)'
@@ -71,6 +88,9 @@ alias port='sudo port'
 alias ds='llm -m deepseek-r1:7b'
 alias dsc='llm chat -m deepseek-r1:7b'
 alias mount_pandora='rclone mount b2:neo-pandora ~/pandora/ --allow-non-empty --vfs-cache-mode full --allow-other --daemon'
+alias llg='llm prompt -m gemini/gemini-2.5-flash-lite  -s "Reply in minium words. You are in user terminal. User expects commands replies. Give replies as possible commands that can run. Multiple commands are ok. If problem is simple, give stright reply and also assume something is not working and reply accordingly too. at least 2 or more possible ways of doing it should be there, directly output commands"'
+alias relpath='realpath --relative-to="${PWD}"'
+alias code='/Applications/Visual\ Studio\ Code.app/Contents/MacOS/Electron'
 
 autoload -Uz compinit
 compinit
@@ -225,18 +245,18 @@ export PATH="/opt/homebrew/Cellar/dex2jar/2.3/bin/:$PATH"
 export PATH="/opt/homebrew/bin/:$PATH"
 export PATH="/Users/neo/.local/bin/:$PATH"
 export PATH="/Users/neo/node_modules/.bin/:$PATH"
-export PATH="/opt/homebrew/Cellar/john-jumbo/1.9.0_1/share/john/:$PATH"
 export PATH="/Users/neo/go/bin/:$PATH"
 source ~/.profile
 export PYENV_ROOT="$HOME/.pyenv"
 export LIMA_INSTANCE=debian
-export JAVA_HOME='/opt/homebrew/Cellar/openjdk@11/11.0.26/libexec/openjdk.jdk/Contents/Home'
+export JAVA_HOME='/opt/homebrew/Cellar/openjdk@21/21.0.6/libexec/openjdk.jdk/Contents/Home'
 export RCLONE_FAST_LIST=1
 alias brewi='arch --x86_64 /usr/local/Homebrew/bin/brew'
 alias pythoni='/usr/local/bin/python3'
 alias mac='sw_vers'
 alias java_home='/usr/libexec/java_home'
 alias vim='nvim'
+alias john='/Users/neo/CTF/virtual-machine-files/john/run/john'
 
 source ~/.zshrc_extra_aliases
 
@@ -306,3 +326,8 @@ export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+
+# Added by Windsurf
+export PATH="/Users/neo/.codeium/windsurf/bin:$PATH"
+
+docker context use lima-debian &>/dev/null
